@@ -1,0 +1,23 @@
+name: Unzip Archive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip and commit
+        run: |
+          unzip -o Archive.zip -d extracted
+          cp -r extracted/* . 2>/dev/null || true
+          cp -r extracted/.* . 2>/dev/null || true
+          rm -rf extracted Archive.zip .github
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -A
+          git commit -m "Extract site files from Archive.zip"
+          git push
